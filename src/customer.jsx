@@ -2,9 +2,55 @@ import React, { useState } from 'react'
 import './App.css'
 import CustomerService from './services/Customer'
 
-const Customer = ({customer}) => {
+// props on nimeltään Customer
+const Customer = ({customer, editCustomer, setIsPositive, setMessage, setShowMessage, reload, reloadNow}) => {
 
+    // Komponentin tilan määritys
     const [showDetails, setShowDetails] = useState(false)
+
+    const deleteCustomer = (customer) => {
+        if (window.confirm(`Remove customer ${customer.companyName}`) === true) {
+            CustomerService.remove(customer.customerId)
+            .then(res => {
+                if (res.status === 200) {
+                    setMessage(`Successfully removed a customer ${customer.companyName}`)
+                    setIsPositive(true)
+                    setShowMessage(true)
+                    window.scrollBy(0, -10000) //Scrollataan ylös, jotta nähdään alert
+
+                    // Ilmoituksen piilotus
+                    setTimeout(() => {
+                        setShowMessage(false)
+                    }, 3000)
+                    reloadNow(!reload)
+                }
+            })
+            .catch(error => {
+                setMessage(error)
+                setIsPositive(false)
+                setShowMessage(true)
+                window.scrollBy(0, -10000) //Scrollataan ylös, jotta nähdään alert
+        
+                // Ilmoituksen piilotus
+                setTimeout(() => {
+                    setShowMessage(false)
+                }, 3000)
+            })
+            
+        }
+        else {
+            setMessage("Delete canceled.")
+                    setIsPositive(true)
+                    setShowMessage(true)
+                    window.scrollBy(0, -10000) //Scrollataan ylös, jotta nähdään alert
+
+                    // Ilmoituksen piilotus
+                    setTimeout(() => {
+                        setShowMessage(false)
+                    }, 3000)
+                }
+        }
+
 
   return (
     <div className="customer">
@@ -14,8 +60,8 @@ const Customer = ({customer}) => {
 
         {showDetails &&
         <div className="customerDetails">
-            <button>Edit</button>
-            <button>Delete</button>
+            <button onClick={() => editCustomer(customer)}>Edit</button>
+            <button onClick={() => deleteCustomer(customer)}>Delete</button>
             <table>
                 <thead>
                     <tr>
