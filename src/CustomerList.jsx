@@ -55,7 +55,7 @@ const CustomerList = ({setIsPositive, setShowMessage, setMessage}) => {
 
                 <input placeholder="Search by company name" value={search} onChange={handleSearchInputChange} />
 
-                {showCustomers && customers && customers.map(c => {
+                {!lisäystila && !muokkaustila && showCustomers && customers && customers.map(c => {
                     const lowerCaseName = c.companyName.toLowerCase()
                     if (lowerCaseName.indexOf(search) > -1) {
                         return(
